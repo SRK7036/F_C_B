@@ -1,0 +1,47 @@
+How to run
+
+Backend
+
+Create DB (Supabase Postgres) and get the connection string.
+
+cd backend
+
+python -m venv .venv && source .venv/bin/activate (Windows: .venv\Scripts\activate)
+
+pip install -r requirements.txt
+
+cp .env.example .env and fill in:
+
+SUPABASE_DB_URL
+
+ANTHROPIC_API_KEY or OPENAI_API_KEY
+
+Add your PDFs/DOCX/CSV/TXT to knowledge_base/ (sibling of backend).
+
+python -m rag.ingestion (builds Chroma)
+
+uvicorn main:app --reload --port 8000
+
+Frontend
+
+cd frontend
+
+cp .env.local.example .env.local (points at http://localhost:8000)
+
+npm install
+
+npm run dev → open http://localhost:3000
+
+Flow supported:
+
+Ad/CTA → form at / → creates Lead + Session (tracked by session_token)
+
+Chat at /chat uses that token, calls RAG
+
+Buttons:
+
+✅ Agree → stores recommendation, sends email (SMTP if configured, else console log)
+
+🔍 Explore More → fetches alternates with your updated preferences
+
+If you want me to tailor chunk sizes, prompt, or hook CrewAI by default, say the word and I’ll tweak the code for you.
